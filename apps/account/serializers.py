@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from apps.account.sent_mail import send_activation_email
+from apps.account.sent_mail import send_confirmation_email
 
 User = get_user_model()
 
@@ -26,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         code = user.activation_code
 
-        send_activation_email(code, user.email)
+        send_confirmation_email(code, user.email)
 
         return user
 
@@ -52,3 +52,28 @@ class LoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError('Неверный email или password')
         attrs['user'] = user
         return attrs
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, min_length=6)
+    password2 = serializers.CharField(required=True, min_length=6)
+
+    def validate_old_password(self, p): #проверь старый пароль
+        user = self.context.get('request').user #вытащи юзера
+        if not user.check_password(p): #проверь пароль
+            raise serializers.ValidationError('Неверный пароль!!!')
+        return p
+
+    def validate(self, attrs): #проверь совпадают ли 2 новых пароля
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+        if password != password2:
+            raise serializers.ValidationError('Password did not match !!!')
+        return attrs
+
+    def set_new_password(self):
+        user =self.context.get('request').user
+        password = self.validated_data.get('password')
+        user.set_password(password)
+        user.save()

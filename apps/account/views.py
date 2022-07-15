@@ -1,34 +1,23 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.account.serializers import RegisterSerializer, LoginSerializer
+from apps.account.serializers import RegisterSerializer, LoginSerializer, ChangePasswordSerializer
 
 User = get_user_model()
 
-
-# class RegisterApiView(APIView):
-#     def post(self, request):
-#         data = request.data
-#         serializers = RegisterSerializer(data=data)
-#
-#         if serializers.is_valid(raise_exception=True):
-#             serializers.save()
-#             message = 'Вы успешно зарегистрированы.' \
-#                       'Вам отправлено письмо с активацией'
-#             return Response(message, status=201)
-#
 
 class RegisterApiView(APIView):
     def post(self, request):
         data = request.data
         serializers = RegisterSerializer(data=data)
 
-        if serializers.is_valid(raise_exception =True):
+        if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return (Response('Вы успешно зареганы', status=201))
+            return (Response('Вы успешно зареганы и вам отправлен email c активационным кодом', status=201))
 
 
 class ActivationView(APIView):
@@ -45,3 +34,16 @@ class ActivationView(APIView):
 
 class LoginApiView(ObtainAuthToken):
     serializer_class = LoginSerializer
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializers = ChangePasswordSerializer(data=request.data,
+                                               context={'request': request})
+
+        serializers.is_valid(raise_exception=True)
+        serializers.set_new_password()
+        return Response('Пароль успешно изменен!')
+
