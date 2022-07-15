@@ -44,11 +44,11 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-
     def __str__(self):
         return f'{self.email}'
 
     def create_activation_code(self):
         import uuid
-        code= str(uuid.uuid4())
-        self.activation_code=code
+        code = str(uuid.uuid4())
+        self.activation_code = code
+
