@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+import rest_framework.permissions
 from decouple import config  # для скрытия данных
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     # my apps
     'rest_framework',
     'rest_framework.authtoken',
+    # very important
+    'django_filters',
 
     'drf_yasg',
     'apps.account',
@@ -146,5 +149,8 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
-    ]
+    ],  # ГЛОБАЛЬНАЯ ПАГИНАЦИЯ
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 1
+    # 'DEFAULT_PERMISSION_CLASSES': [rest_framework.permissions.IsAuthenticated]
 }

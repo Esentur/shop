@@ -13,18 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+#######for image view
+from django.conf import settings
+from django.conf.urls.static import static
+######## general ############################
 from django.contrib import admin
 from django.urls import path, include
-################################
+#########for swagger #######################
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
-################################
+#########for swagger ######################
 schema_view = get_schema_view(
     openapi.Info(
         title='Shop',
         default_version='v1',
-        description='Shop project with customUser,Activation,Login,Register'
+        description='Shop project with customUser,Activation,Login,Register,Products,Categories'
+                    '(filtering,ordering,searching,permissions,paginations)'
     ),
     public=True
 )
@@ -33,7 +38,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('swagger/', schema_view.with_ui('swagger')),
+    path('swagger/', schema_view.with_ui('swagger')), #for documentation and provinding endpoints
     path('api/v1/account/', include('apps.account.urls')),
     path('api/v1/product/', include('apps.product.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # for dispaly images
