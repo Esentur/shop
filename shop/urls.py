@@ -24,6 +24,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
 #########for swagger ######################
+
 schema_view = get_schema_view(
     openapi.Info(
         title='Shop',
@@ -37,8 +38,11 @@ schema_view = get_schema_view(
 ################################
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('swagger/', schema_view.with_ui('swagger')), #for documentation and provinding endpoints
-    path('api/v1/account/', include('apps.account.urls')),
-    path('api/v1/product/', include('apps.product.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # for dispaly images
+                  path('admin/', admin.site.urls),
+                  path('swagger/', schema_view.with_ui('swagger')),  # for documentation and provinding endpoints
+                  path('api/v1/account/', include('apps.account.urls')),
+                  path('api/v1/', include('apps.product.urls')),
+                  path('api/v1/order/', include('apps.cart.urls')),
+
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # for display images

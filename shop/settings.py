@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # my apps
     'rest_framework',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     # very important
     'django_filters',
 
@@ -148,9 +149,22 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 ##################ADD TOKEN##########
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
-    ],  # ГЛОБАЛЬНАЯ ПАГИНАЦИЯ
+        # 'rest_framework.authentication.TokenAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ],
+
+    # ГЛОБАЛЬНАЯ ПАГИНАЦИЯ
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'PAGE_SIZE': 1
     # 'DEFAULT_PERMISSION_CLASSES': [rest_framework.permissions.IsAuthenticated]
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    }
 }

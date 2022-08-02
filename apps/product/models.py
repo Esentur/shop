@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -49,3 +50,57 @@ class Product(models.Model):
 class Image(models.Model):
     image = models.ImageField(upload_to='products')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+
+
+class Like(models.Model):
+    '''
+    Модель лайков
+    '''
+    owner = models.ForeignKey(User,
+                              on_delete=models.CASCADE,
+                              related_name='likes',
+                              verbose_name='Владелец лайка')
+    product = models.ForeignKey(Product,
+                                on_delete=models.CASCADE,
+                                related_name='likes',
+                                verbose_name='Товар')
+    like = models.BooleanField('Лайк', default=False)
+
+    def __str__(self):
+        return f'{self.product} {self.like}'
+
+
+class Rating(models.Model):
+    '''
+    Модель  рейтинга
+    '''
+    owner = models.ForeignKey(User,
+                              on_delete=models.CASCADE,
+                              related_name='ratings',
+                              verbose_name='Владелец рейтинга')
+    product = models.ForeignKey(Product,
+                                on_delete=models.CASCADE,
+                                related_name='ratings',
+                                verbose_name='Продукт')
+    rating = models.SmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ], default=1
+    )
+
+    def __str__(self):
+        return f'{self.product} - {self.rating}'
+
+
+class Comment(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    comment = models.TextField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "comment"
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'комментарии'
+

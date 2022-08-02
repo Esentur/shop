@@ -9,3 +9,12 @@ def send_confirmation_email(code, email):
         'esenturdildebekov8@gmail.com',  # from
         [email]  # to
     )
+
+
+def forgot_password_email(code, email):
+    send_mail(
+        'Восстановление пароля',
+        f'Ваш код подтверждения: {code}',
+        'esenturdildebekov8@gmail.com',
+        [email]
+    )
