@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from apps.account.serializers import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, \
     ForgotPasswordCompleteSerializer, ForgotPasswordSerializer
+from apps.account.tasks import send_info_about_activation
 
 User = get_user_model()
 
@@ -29,6 +30,7 @@ class ActivationView(APIView):
             user.is_active = True
             user.activation_code = ''
             user.save()
+            send_info_about_activation.delay(user.email)
             return Response({'msg': 'Успешно'}, status=200)
         except User.DoesNotExist:
             return Response({'msg': 'Неверный код!'}, status=400)

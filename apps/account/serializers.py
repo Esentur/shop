@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from rest_framework import serializers
 
 from apps.account.sent_mail import send_confirmation_email, forgot_password_email
+from apps.account.tasks import celery_send_confirmation_email
 
 User = get_user_model()
 
@@ -27,8 +28,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         code = user.activation_code
 
-        send_confirmation_email(code, user.email)
-
+        # send_confirmation_email(code, user.email)
+        celery_send_confirmation_email.delay(code, user.email)
         return user
 
 

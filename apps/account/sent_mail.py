@@ -18,3 +18,11 @@ def forgot_password_email(code, email):
         'esenturdildebekov8@gmail.com',
         [email]
     )
+
+def send_order_confirmation(email,info):
+    send_mail(
+        ' Подтверждение покупки',
+        f'Информация о покупке: {info}',
+        'esenturdildebekov8@gmail.com',
+        [email]
+    )

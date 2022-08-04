@@ -43,6 +43,7 @@ urlpatterns = [
                   path('api/v1/account/', include('apps.account.urls')),
                   path('api/v1/', include('apps.product.urls')),
                   path('api/v1/order/', include('apps.cart.urls')),
+                  path('api/v1/spam/', include('apps.spam.urls')),
 
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # for display images

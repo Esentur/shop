@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.product.models import Category, Product, Image, Comment, Rating
+from apps.product.tasks import celery_email_about_product
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -52,6 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
         for image in images.getlist('images'):
             Image.objects.create(product=product, image=image)
 
+        celery_email_about_product.delay(product.name)
         return product
 
     # покажи лайки
